@@ -46,6 +46,16 @@ All endpoints live under `/api/v1` (see `routes/api.php`). Health check:
 Domain route files under `routes/api/v1/*.php` are registered as features are
 built.
 
+## Demo Credentials
+
+Seeded with `php artisan db:seed` (all passwords: `password`):
+
+| Role | Email |
+| --- | --- |
+| Admin | `admin@shopflow.dev` |
+| Manager | `manager@shopflow.dev` |
+| Customer | `customer@shopflow.dev` |
+
 ## Conventions
 
 - Money is stored as integer cents (see `docs/database/schema.md`).
