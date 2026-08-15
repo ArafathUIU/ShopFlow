@@ -13,7 +13,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->string('path', 500);
-            $table->string('disk', 20)->default('s3');
+            $table->string('disk', 20)->default('public');
             $table->string('alt_text')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_primary')->default(false);

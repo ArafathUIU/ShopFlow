@@ -46,5 +46,5 @@ Route::prefix('v1')->group(function (): void {
     // require __DIR__.'/api/v1/inventory.php';
     // require __DIR__.'/api/v1/users.php';
     // require __DIR__.'/api/v1/analytics.php';
-    // require __DIR__.'/api/v1/admin.php';
+    require __DIR__.'/api/v1/admin.php';
 });
