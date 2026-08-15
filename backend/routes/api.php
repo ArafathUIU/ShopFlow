@@ -35,7 +35,7 @@ Route::prefix('v1')->group(function (): void {
     ]));
 
     // Domain routes are registered in dedicated files as they are built:
-    // require __DIR__.'/api/v1/auth.php';
+    require __DIR__.'/api/v1/auth.php';
     // require __DIR__.'/api/v1/products.php';
     // ...
 });

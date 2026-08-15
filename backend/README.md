@@ -40,11 +40,41 @@ php artisan queue:work         # process background jobs
 
 ## API
 
-All endpoints live under `/api/v1` (see `routes/api.php`). Health check:
-`GET /api/v1/health`.
+All endpoints live under `/api/v1` (see `routes/api.php`). Domain route files
+under `routes/api/v1/*.php` are registered as features are built.
 
-Domain route files under `routes/api/v1/*.php` are registered as features are
-built.
+### Response Envelope
+
+Every endpoint returns a uniform JSON envelope (see `App\Support\ApiResponse`):
+
+```json
+{ "success": true,  "message": "OK", "data": { }, "meta": { } }  // success
+{ "success": false, "message": "Error", "errors": { } }          // error
+```
+
+Errors are centralized in `bootstrap/app.php`: validation → 422, unauthenticated
+→ 401, forbidden → 403, not found → 404, wrong method → 405, throttled → 429.
+
+### Authentication
+
+Sanctum bearer tokens (`Authorization: Bearer <token>`):
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `/api/v1/auth/register` | Create account, returns `data.user` + `data.token` |
+| POST | `/api/v1/auth/login` | Login, returns `data.user` + `data.token` |
+| POST | `/api/v1/auth/logout` | Revoke current token |
+| GET | `/api/v1/auth/me` | Current user |
+| POST | `/api/v1/auth/email/verification-notification` | Resend verification email |
+| POST | `/api/v1/auth/email/verify` | Verify email (`id` + `hash` from the email link) |
+| POST | `/api/v1/auth/forgot-password` | Send password reset link |
+| POST | `/api/v1/auth/reset-password` | Reset password (`token`, `email`, `password`) |
+
+`register`, `login`, `forgot-password`, and the verification endpoint are rate
+limited via `throttle` middleware.
+
+Authorization: routes restricted with the `role` middleware, e.g.
+`middleware('role:admin')` or `middleware('role:admin,manager')`.
 
 ## Demo Credentials
 
