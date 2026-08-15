@@ -302,7 +302,7 @@ export default function AdminProductsPage() {
                     <tr key={product.id} className="hover:bg-accent/50 transition-colors">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          {product.images[0] ? (
+                          {product.images?.[0] ? (
                             <img src={product.images[0].url} alt={product.images[0].alt_text || product.name} className="h-10 w-10 rounded-md object-cover" />
                           ) : (
                             <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center text-xs text-muted-foreground">No img</div>

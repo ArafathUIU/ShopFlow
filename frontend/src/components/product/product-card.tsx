@@ -17,7 +17,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
-  const primaryImage = product.images[0]?.url || '/placeholder-product.png';
+  const primaryImage = product.images?.[0]?.url || '/placeholder-product.png';
   const hasDiscount = product.is_on_sale || (product.compare_at_price !== null && product.compare_at_price !== undefined);
   const displayPrice = product.price.formatted;
   const comparePrice = product.compare_at_price?.formatted;
@@ -36,7 +36,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/products/${product.slug}`} className="relative aspect-square overflow-hidden bg-muted">
         <Image
           src={primaryImage}
-          alt={product.images[0]?.alt_text || product.name}
+           alt={product.images?.[0]?.alt_text || product.name}
           fill
           className="object-cover transition-transform group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
