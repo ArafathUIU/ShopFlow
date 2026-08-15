@@ -22,10 +22,13 @@ export const productService = {
         }
       });
     }
-    const response = await apiClient.get<ApiResponse<PaginatedResponse<Product>>>(
+    const response = await apiClient.get<ApiResponse<Product[]>>(
       `/products?${params.toString()}`
     );
-    return response.data.data;
+    return {
+      data: response.data.data || [],
+      pagination: (response.data as any).meta?.pagination || {},
+    };
   },
 
   async getProduct(id: number) {
@@ -39,10 +42,13 @@ export const productService = {
   },
 
   async searchProducts(query: string) {
-    const response = await apiClient.get<ApiResponse<PaginatedResponse<Product>>>('/products', {
+    const response = await apiClient.get<ApiResponse<Product[]>>('/products', {
       params: { search: query },
     });
-    return response.data.data;
+    return {
+      data: response.data.data || [],
+      pagination: (response.data as any).meta?.pagination || {},
+    };
   },
 
   async getFeaturedProducts() {

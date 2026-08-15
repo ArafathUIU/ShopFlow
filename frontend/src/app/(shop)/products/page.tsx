@@ -93,8 +93,8 @@ function ProductsClient() {
         limit: 12,
       });
       if (result) {
-        setProducts(result.data);
-        setTotalPages(result.pagination.last_page);
+        setProducts(result.data ?? []);
+        setTotalPages(result.pagination?.last_page ?? 1);
       }
     } catch {
       // Error handled silently
@@ -226,7 +226,7 @@ function ProductsClient() {
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl font-bold">Products</h1>
             <span className="text-sm text-muted-foreground">
-              {loading ? 'Loading...' : `${products.length} products`}
+              {loading ? 'Loading...' : `${(products ?? []).length} products`}
             </span>
           </div>
           <ProductGrid products={products} loading={loading} />
