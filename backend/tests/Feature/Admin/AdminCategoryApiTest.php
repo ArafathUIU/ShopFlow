@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('admin cannot access without authentication', function (): void {
-    $this->getJson('/api/v1/admin/categories')->assertStatus(404);
+    $this->getJson('/api/v1/admin/categories')->assertStatus(401);
 });
 
 it('forbids non-admin users from managing categories', function (): void {

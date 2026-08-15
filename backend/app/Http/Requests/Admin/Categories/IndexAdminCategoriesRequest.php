@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin\Categories;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class IndexAdminCategoriesRequest extends FormRequest
 {
@@ -14,7 +13,7 @@ class IndexAdminCategoriesRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:255'],
-            'is_active' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'string', 'in:true,false,1,0'],
             'parent_id' => ['nullable', 'exists:categories,id'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
             'page' => ['nullable', 'integer', 'min:1'],
