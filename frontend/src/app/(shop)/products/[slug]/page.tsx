@@ -24,6 +24,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const images = product.images?.length ? product.images : (product.primary_image ? [product.primary_image] : []);
+  const safeSelectedImage = Math.min(selectedImage, images.length - 1);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const addItem = useCartStore((state) => state.addItem);
@@ -96,8 +98,8 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         <div className="space-y-4">
           <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
             <Image
-              src={product.images?.[selectedImage]?.url || '/placeholder-product.svg'}
-              alt={product.images?.[selectedImage]?.alt_text || product.name}
+              src={images[safeSelectedImage]?.url || '/placeholder-product.svg'}
+              alt={images[safeSelectedImage]?.alt_text || product.name}
               fill
               className="object-cover"
               priority
@@ -109,9 +111,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               </Badge>
             )}
           </div>
-          {product.images.length > 1 && (
+          {images.length > 1 && (
             <div className="flex gap-2 overflow-x-auto pb-2">
-              {product.images.map((image, idx) => (
+              {images.map((image, idx) => (
                 <button
                   key={image.id}
                   onClick={() => setSelectedImage(idx)}

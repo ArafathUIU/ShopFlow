@@ -18,7 +18,7 @@ class ProductController extends Controller
 
         $query = Product::query()
             ->active()
-            ->with(['category', 'primaryImage', 'inventory'])
+            ->with(['category', 'primaryImage', 'images', 'inventory'])
             ->when($request->filled('search'), fn (Builder $q) => $q->search($request->string('search')))
             ->when($request->filled('category'), fn (Builder $q) => $q->inCategory($request->integer('category')))
             ->when($request->filled('min_price'), fn (Builder $q) => $q->where('price', '>=', $request->minPriceCents()))
@@ -61,7 +61,7 @@ class ProductController extends Controller
         $product = Product::query()
             ->active()
             ->where('slug', $slug)
-            ->with(['category', 'images' => fn ($q) => $q->orderBy('sort_order'), 'inventory'])
+            ->with(['category', 'primaryImage', 'images' => fn ($q) => $q->orderBy('sort_order'), 'inventory'])
             ->first();
 
         if (! $product) {
