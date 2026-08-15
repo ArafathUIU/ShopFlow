@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import type { CartItem as CartItemType } from '@/lib/types';
@@ -41,12 +40,10 @@ export function CartItemRow({ item }: CartItemProps) {
     <div className="flex items-start gap-4 py-4 border-b">
       <Link href={`/products/${item.product.slug}`} className="shrink-0">
         <div className="relative h-20 w-20 rounded-md overflow-hidden bg-muted">
-          <Image
+          <img
             src={primaryImage}
             alt={item.product.name}
-            fill
-            className="object-cover"
-            sizes="80px"
+            className="object-cover w-full h-full"
           />
         </div>
       </Link>

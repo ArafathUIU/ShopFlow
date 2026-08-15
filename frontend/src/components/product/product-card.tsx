@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart } from 'lucide-react';
 import type { Product } from '@/lib/types';
@@ -34,12 +33,10 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-lg border bg-background transition-shadow hover:shadow-lg">
       <Link href={`/products/${product.slug}`} className="relative aspect-square overflow-hidden bg-muted">
-        <Image
+        <img
           src={primaryImage}
-           alt={product.images?.[0]?.alt_text || product.name}
-          fill
-          className="object-cover transition-transform group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          alt={product.primary_image?.alt_text || product.images?.[0]?.alt_text || product.name}
+          className="object-cover transition-transform group-hover:scale-105 w-full h-full"
         />
         {hasDiscount && (
           <Badge className="absolute top-2 left-2" variant="destructive">

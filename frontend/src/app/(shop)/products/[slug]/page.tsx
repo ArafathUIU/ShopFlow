@@ -24,7 +24,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
-  const images = product.images?.length ? product.images : (product.primary_image ? [product.primary_image] : []);
+  const images = product?.images?.length ? product.images : (product?.primary_image ? [product.primary_image] : []);
   const safeSelectedImage = Math.min(selectedImage, images.length - 1);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
