@@ -9,7 +9,6 @@ use App\Models\Inventory;
 use App\Models\Product;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
 
 class InventoryController extends Controller
 {
@@ -52,7 +51,7 @@ class InventoryController extends Controller
         }
 
         if (request()->filled('search')) {
-            $search = '%' . request()->string('search') . '%';
+            $search = '%'.request()->string('search').'%';
             $query->whereHas('product', fn ($q) => $q->where('name', 'like', $search)
                 ->orWhere('sku', 'like', $search));
         }

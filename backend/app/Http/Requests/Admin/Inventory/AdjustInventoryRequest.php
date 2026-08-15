@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin\Inventory;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class AdjustInventoryRequest extends FormRequest
 {

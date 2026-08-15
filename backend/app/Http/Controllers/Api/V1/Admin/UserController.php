@@ -49,7 +49,7 @@ class UserController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $search = '%' . $request->string('search') . '%';
+            $search = '%'.$request->string('search').'%';
             $query->where('name', 'like', $search)
                 ->orWhere('email', 'like', $search)
                 ->orWhere('phone', 'like', $search);

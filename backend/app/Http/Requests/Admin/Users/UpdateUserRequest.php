@@ -17,7 +17,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $this->user()->id],
+            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,'.$this->user()->id],
             'phone' => ['sometimes', 'nullable', 'string', 'max:20'],
             'role' => ['sometimes', 'string', new Enum(UserRole::class)],
         ];

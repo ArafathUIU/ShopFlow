@@ -51,7 +51,7 @@ class OrderController extends Controller
 
         // Filter by order number
         if (request()->filled('search')) {
-            $search = '%' . request()->string('search') . '%';
+            $search = '%'.request()->string('search').'%';
             $query->where('order_number', 'like', $search)
                 ->orWhereHas('user', fn ($q) => $q->where('name', 'like', $search)
                     ->orWhere('email', 'like', $search));

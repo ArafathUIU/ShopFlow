@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Support\ApiResponse;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -33,8 +34,8 @@ class AnalyticsController extends Controller
 
     public function revenue(?string $from = null, ?string $to = null): JsonResponse
     {
-        $toDate = $to ? \Carbon\Carbon::parse($to)->endOfDay() : now()->endOfDay();
-        $fromDate = $from ? \Carbon\Carbon::parse($from)->startOfDay() : now()->subMonths(12)->startOfDay();
+        $toDate = $to ? Carbon::parse($to)->endOfDay() : now()->endOfDay();
+        $fromDate = $from ? Carbon::parse($from)->startOfDay() : now()->subMonths(12)->startOfDay();
 
         $revenueData = Order::query()
             ->where('status', OrderStatus::Paid)
@@ -88,8 +89,8 @@ class AnalyticsController extends Controller
 
     public function orders(?string $from = null, ?string $to = null): JsonResponse
     {
-        $toDate = $to ? \Carbon\Carbon::parse($to)->endOfDay() : now()->endOfDay();
-        $fromDate = $from ? \Carbon\Carbon::parse($from)->startOfDay() : now()->subMonths(12)->startOfDay();
+        $toDate = $to ? Carbon::parse($to)->endOfDay() : now()->endOfDay();
+        $fromDate = $from ? Carbon::parse($from)->startOfDay() : now()->subMonths(12)->startOfDay();
 
         $statusBreakdown = Order::query()
             ->whereBetween('placed_at', [$fromDate, $toDate])
@@ -111,7 +112,7 @@ class AnalyticsController extends Controller
         ]);
     }
 
-    private function getRevenue(\Carbon\Carbon $fromDate, \Carbon\Carbon $toDate): array
+    private function getRevenue(Carbon $fromDate, Carbon $toDate): array
     {
         $totalRevenue = Order::query()
             ->where('status', OrderStatus::Paid)
@@ -132,7 +133,7 @@ class AnalyticsController extends Controller
         ];
     }
 
-    private function getOrderStats(\Carbon\Carbon $fromDate, \Carbon\Carbon $toDate): array
+    private function getOrderStats(Carbon $fromDate, Carbon $toDate): array
     {
         $totalOrders = Order::whereBetween('placed_at', [$fromDate, $toDate])->count();
         $paidOrders = Order::where('status', OrderStatus::Paid)->whereBetween('placed_at', [$fromDate, $toDate])->count();
