@@ -1,8 +1,10 @@
 <?php
 
 use App\Exceptions\InsufficientStockException;
+use App\Exceptions\InvalidCheckoutException;
 use App\Exceptions\InvalidCouponException;
 use App\Http\Middleware\EnsureRoleIs;
+use App\Services\Orders\PricingService;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -26,6 +28,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withSingletons([
+        PricingService::class => fn (): PricingService => PricingService::fromConfig(),
+    ])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => EnsureRoleIs::class,
@@ -65,6 +70,12 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (InvalidCouponException $e, Request $request) use ($forApi) {
+            if ($forApi($request->path())) {
+                return ApiResponse::error($e->getMessage(), 422);
+            }
+        });
+
+        $exceptions->render(function (InvalidCheckoutException $e, Request $request) use ($forApi) {
             if ($forApi($request->path())) {
                 return ApiResponse::error($e->getMessage(), 422);
             }

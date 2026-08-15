@@ -40,7 +40,7 @@ Route::prefix('v1')->group(function (): void {
     require __DIR__.'/api/v1/categories.php';
     require __DIR__.'/api/v1/cart.php';
     require __DIR__.'/api/v1/wishlist.php';
-    // require __DIR__.'/api/v1/orders.php';
+    require __DIR__.'/api/v1/orders.php';
     // require __DIR__.'/api/v1/payments.php';
     require __DIR__.'/api/v1/coupons.php';
     // require __DIR__.'/api/v1/inventory.php';
