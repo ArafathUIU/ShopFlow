@@ -3,15 +3,17 @@
 namespace App\Services\Cart;
 
 use App\Exceptions\InsufficientStockException;
-use App\Exceptions\InvalidCouponException;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\Coupons\CouponService;
 
 final class CartService
 {
+    public function __construct(private readonly CouponService $coupons) {}
+
     public function getOrCreateFor(User $user): Cart
     {
         return Cart::query()->firstOrCreate(['user_id' => $user->id]);
@@ -66,25 +68,7 @@ final class CartService
 
     public function applyCoupon(Cart $cart, Coupon $coupon, User $user): Cart
     {
-        if (! $coupon->isActive()) {
-            throw new InvalidCouponException('This coupon is no longer valid.');
-        }
-
-        if ($coupon->hasReachedUsageLimit()) {
-            throw new InvalidCouponException('This coupon has reached its usage limit.');
-        }
-
-        if ($coupon->hasReachedPerUserLimit($user)) {
-            throw new InvalidCouponException('You have already used this coupon.');
-        }
-
-        $subtotal = $cart->subtotal();
-
-        if ($coupon->min_order_amount !== null && $subtotal->cents() < $coupon->min_order_amount->cents()) {
-            throw new InvalidCouponException(
-                'This coupon requires a minimum order of $'.$coupon->min_order_amount->format().'.'
-            );
-        }
+        $this->coupons->assertValid($coupon, $user, $cart->subtotal());
 
         $cart->update(['coupon_id' => $coupon->id]);
 
