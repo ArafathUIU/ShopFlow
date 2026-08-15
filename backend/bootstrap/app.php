@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\InsufficientStockException;
+use App\Exceptions\InvalidCouponException;
 use App\Http\Middleware\EnsureRoleIs;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -53,6 +55,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ModelNotFoundException $e, Request $request) use ($forApi) {
             if ($forApi($request->path())) {
                 return ApiResponse::error('Resource not found.', 404);
+            }
+        });
+
+        $exceptions->render(function (InsufficientStockException $e, Request $request) use ($forApi) {
+            if ($forApi($request->path())) {
+                return ApiResponse::error($e->getMessage(), 422);
+            }
+        });
+
+        $exceptions->render(function (InvalidCouponException $e, Request $request) use ($forApi) {
+            if ($forApi($request->path())) {
+                return ApiResponse::error($e->getMessage(), 422);
             }
         });
 
