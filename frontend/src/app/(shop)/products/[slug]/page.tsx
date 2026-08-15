@@ -96,7 +96,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
         <div className="space-y-4">
           <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
             <Image
-              src={product.images?.[selectedImage]?.url || '/placeholder-product.png'}
+              src={product.images?.[selectedImage]?.url || '/placeholder-product.svg'}
               alt={product.images?.[selectedImage]?.alt_text || product.name}
               fill
               className="object-cover"

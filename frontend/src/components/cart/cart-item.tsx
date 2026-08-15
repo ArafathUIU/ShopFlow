@@ -17,7 +17,7 @@ export function CartItemRow({ item }: CartItemProps) {
   const removeItem = useCartStore((state) => state.removeItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
-  const primaryImage = item.product.images?.[0]?.url || '/placeholder-product.png';
+  const primaryImage = item.product.images?.[0]?.url || '/placeholder-product.svg';
   const itemTotal = item.unit_price * item.quantity;
 
   const handleQuantityChange = async (newQuantity: number) => {

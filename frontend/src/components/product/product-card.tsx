@@ -17,7 +17,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
-  const primaryImage = product.images?.[0]?.url || '/placeholder-product.png';
+  const primaryImage = product.images?.[0]?.url || '/placeholder-product.svg';
   const hasDiscount = product.is_on_sale || (product.compare_at_price !== null && product.compare_at_price !== undefined);
   const displayPrice = product.price.formatted;
   const comparePrice = product.compare_at_price?.formatted;
