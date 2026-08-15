@@ -1,0 +1,47 @@
+# --- Dependencies ---
+node_modules/
+vendor/
+*.log
+
+# --- Environment ---
+.env
+.env.local
+.env.*.local
+.env.production
+
+# --- Build output ---
+/dist
+/build
+/.next
+/out
+/tmp
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+
+# --- PHP ---
+composer.phar
+
+# --- Coverage ---
+coverage/
+.phpunit.result.cache
+.phpunit.cache
+
+# --- Docker ---
+*.pid
+
+# --- Backend (Laravel) specifics handled by backend/.gitignore too ---
+backend/storage/logs/*
+!backend/storage/logs/.gitignore
+backend/storage/framework/cache/*
+!backend/storage/framework/cache/.gitignore
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitignore
+backend/storage/framework/testing/*
+!backend/storage/framework/testing/.gitignore
