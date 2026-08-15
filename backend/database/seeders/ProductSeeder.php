@@ -195,7 +195,7 @@ class ProductSeeder extends Seeder
             ProductImage::query()->updateOrCreate(
                 ['product_id' => $product->id, 'is_primary' => true],
                 [
-                    'path' => "https://picsum.photos/seed/{$product->sku}/400/400",
+                    'path' => 'https://placehold.co/400x400/1e293b/ffffff?text=' . urlencode($product->name),
                     'disk' => 'public',
                     'alt_text' => $product->name,
                     'sort_order' => 0,
