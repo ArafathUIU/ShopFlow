@@ -5,6 +5,8 @@ use App\Exceptions\InvalidCheckoutException;
 use App\Exceptions\InvalidCouponException;
 use App\Http\Middleware\EnsureRoleIs;
 use App\Services\Orders\PricingService;
+use App\Services\Payments\PaymentGateway;
+use App\Services\Payments\Stripe\StripeGateway;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -30,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withSingletons([
         PricingService::class => fn (): PricingService => PricingService::fromConfig(),
+        PaymentGateway::class => fn (): StripeGateway => new StripeGateway,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
