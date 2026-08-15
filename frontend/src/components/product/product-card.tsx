@@ -13,21 +13,14 @@ interface ProductCardProps {
   product: Product;
 }
 
-function formatPrice(cents: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(cents / 100);
-}
-
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
   const primaryImage = product.images[0]?.url || '/placeholder-product.png';
-  const hasDiscount = product.price > 0 && product.price < (product.price * 1.2);
-  const displayPrice = formatPrice(product.price);
-  const comparePrice = formatPrice(product.price * 1.2);
+  const hasDiscount = product.is_on_sale || (product.compare_at_price !== null && product.compare_at_price !== undefined);
+  const displayPrice = product.price.formatted;
+  const comparePrice = product.compare_at_price?.formatted;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -65,7 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <div className="flex items-center gap-2">
           <span className="font-bold text-lg">{displayPrice}</span>
-          {hasDiscount && (
+          {hasDiscount && comparePrice && (
             <span className="text-sm text-muted-foreground line-through">{comparePrice}</span>
           )}
         </div>

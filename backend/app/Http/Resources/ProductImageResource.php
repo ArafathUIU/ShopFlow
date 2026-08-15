@@ -13,6 +13,19 @@ class ProductImageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $url = $this->path;
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+            return [
+                'id' => $this->id,
+                'path' => $this->path,
+                'url' => $url,
+                'alt_text' => $this->alt_text,
+                'sort_order' => $this->sort_order,
+                'is_primary' => $this->is_primary,
+            ];
+        }
+
         return [
             'id' => $this->id,
             'path' => $this->path,

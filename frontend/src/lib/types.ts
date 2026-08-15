@@ -15,7 +15,15 @@ export interface Product {
   slug: string;
   description: string;
   sku: string;
-  price: number;
+  price: {
+    cents: number;
+    formatted: string;
+  };
+  compare_at_price?: {
+    cents: number;
+    formatted: string;
+  } | null;
+  is_on_sale?: boolean;
   status: 'active' | 'inactive' | 'archived';
   images: ProductImage[];
   category: Category;

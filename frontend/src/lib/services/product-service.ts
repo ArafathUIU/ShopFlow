@@ -46,7 +46,9 @@ export const productService = {
   },
 
   async getFeaturedProducts() {
-    const response = await apiClient.get<ApiResponse<Product[]>>('/products/featured');
+    const response = await apiClient.get<ApiResponse<Product[]>>('/products', {
+      params: { sort: 'featured', per_page: 8 },
+    });
     return response.data.data || [];
   },
 };

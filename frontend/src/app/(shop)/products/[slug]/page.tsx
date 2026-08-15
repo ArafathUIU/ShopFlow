@@ -85,9 +85,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     return notFound();
   }
 
-  const displayPrice = formatPrice(product.price);
-  const comparePrice = formatPrice(product.price * 1.2);
-  const hasDiscount = product.price > 0 && product.price < (product.price * 1.2);
+  const displayPrice = product.price.formatted;
+  const comparePrice = product.compare_at_price?.formatted;
+  const hasDiscount = product.is_on_sale || (product.compare_at_price !== null && product.compare_at_price !== undefined);
   const inStock = product.status === 'active';
 
   return (
@@ -141,7 +141,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
           <div className="flex items-baseline gap-3">
             <span className="text-3xl font-bold">{displayPrice}</span>
-            {hasDiscount && (
+            {hasDiscount && comparePrice && (
               <span className="text-lg text-muted-foreground line-through">{comparePrice}</span>
             )}
           </div>

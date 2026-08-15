@@ -50,36 +50,39 @@ class OrderSeeder extends Seeder
             $shipping = 500;
             $tax = intdiv($subtotal->cents(), 10);
             $total = $subtotal->cents() + $shipping + $tax;
+            $orderNumber = sprintf('SF-%s-%05d', now()->format('Y'), $index + 1);
 
-            $order = Order::query()->create([
-                'order_number' => sprintf('SF-%s-%05d', now()->format('Y'), $index + 1),
-                'user_id' => $customer->id,
-                'status' => $cycle['status'],
-                'payment_status' => $cycle['payment'],
-                'currency' => 'USD',
-                'subtotal' => $subtotal->cents(),
-                'discount' => 0,
-                'tax' => $tax,
-                'shipping_fee' => $shipping,
-                'total' => $total,
-                'shipping_address' => [
-                    'line1' => '123 Market Street',
-                    'city' => 'Springfield',
-                    'state' => 'IL',
-                    'postal_code' => '62701',
-                    'country' => 'US',
-                ],
-                'billing_address' => [
-                    'line1' => '123 Market Street',
-                    'city' => 'Springfield',
-                    'state' => 'IL',
-                    'postal_code' => '62701',
-                    'country' => 'US',
-                ],
-                'placed_at' => $placedAt,
-                'created_at' => $placedAt,
-                'updated_at' => $placedAt,
-            ]);
+            $order = Order::query()->updateOrCreate(
+                ['order_number' => $orderNumber],
+                [
+                    'user_id' => $customer->id,
+                    'status' => $cycle['status'],
+                    'payment_status' => $cycle['payment'],
+                    'currency' => 'USD',
+                    'subtotal' => $subtotal->cents(),
+                    'discount' => 0,
+                    'tax' => $tax,
+                    'shipping_fee' => $shipping,
+                    'total' => $total,
+                    'shipping_address' => [
+                        'line1' => '123 Market Street',
+                        'city' => 'Springfield',
+                        'state' => 'IL',
+                        'postal_code' => '62701',
+                        'country' => 'US',
+                    ],
+                    'billing_address' => [
+                        'line1' => '123 Market Street',
+                        'city' => 'Springfield',
+                        'state' => 'IL',
+                        'postal_code' => '62701',
+                        'country' => 'US',
+                    ],
+                    'placed_at' => $placedAt,
+                    'created_at' => $placedAt,
+                    'updated_at' => $placedAt,
+                ]
+            );
 
             $order->items()->create([
                 'product_id' => $item->id,
@@ -93,7 +96,7 @@ class OrderSeeder extends Seeder
             if ($cycle['payment']->isPaid()) {
                 $order->payments()->create([
                     'provider' => 'stripe',
-                    'provider_payment_id' => 'pi_seed_'.str($order->order_number)->lower(),
+                    'provider_payment_id' => 'pi_seed_'.str($order->order_number)->lower().'_'.$order->id,
                     'amount' => $total,
                     'currency' => 'USD',
                     'status' => PaymentProviderStatus::Succeeded,

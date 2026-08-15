@@ -10,17 +10,18 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Electronics' => ['Laptops', 'Smartphones', 'Headphones', 'Accessories'],
-            'Clothing' => ['Men', 'Women', 'Kids'],
-            'Home & Kitchen' => ['Cookware', 'Decor', 'Furniture'],
-            'Books' => ['Fiction', 'Non-Fiction', 'Technical'],
-            'Sports & Outdoors' => ['Fitness', 'Camping', 'Cycling'],
+            'Electronics' => ['Laptops', 'Smartphones', 'Headphones', 'Accessories', 'Cameras', 'Wearables'],
+            'Clothing' => ['Men', 'Women', 'Kids', 'Shoes'],
+            'Home & Kitchen' => ['Cookware', 'Decor', 'Furniture', 'Bedding'],
+            'Books' => ['Fiction', 'Non-Fiction', 'Technical', 'Comics'],
+            'Sports & Outdoors' => ['Fitness', 'Camping', 'Cycling', 'Running'],
+            'Beauty & Health' => ['Skincare', 'Makeup', 'Haircare', 'Supplements'],
         ];
 
         foreach ($categories as $parentName => $children) {
             $parent = Category::query()->firstOrCreate(
                 ['slug' => str($parentName)->slug()],
-                ['name' => $parentName, 'description' => "$parentName products.", 'is_active' => true, 'sort_order' => 0]
+                ['name' => $parentName, 'description' => "Shop the best {$parentName} products online.", 'is_active' => true, 'sort_order' => 0]
             );
 
             foreach ($children as $index => $childName) {
@@ -29,7 +30,7 @@ class CategorySeeder extends Seeder
                     [
                         'parent_id' => $parent->id,
                         'name' => $childName,
-                        'description' => "$childName for every budget.",
+                        'description' => "Top-rated {$childName} for every budget.",
                         'is_active' => true,
                         'sort_order' => $index,
                     ]
