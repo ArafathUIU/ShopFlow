@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useAuthStore } from '@/lib/stores/auth-store';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { AIChat } from '@/components/ai/ai-chat';
 
 interface StorefrontLayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <AIChat />
     </div>
   );
 }
