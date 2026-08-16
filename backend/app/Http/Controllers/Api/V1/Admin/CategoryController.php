@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Categories\StoreCategoryRequest;
 use App\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use App\Http\Resources\Admin\AdminCategoryResource;
 use App\Models\Category;
+use App\Services\Cache\CacheService;
 use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -15,9 +16,16 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    public function __construct(private readonly CacheService $cache) {}
+
     private function findCategory(int $id): Category
     {
         return Category::withTrashed()->findOrFail($id);
+    }
+
+    private function invalidateCategoryCache(): void
+    {
+        $this->cache->forget('categories:tree');
     }
 
     public function index(IndexAdminCategoriesRequest $request): JsonResponse
@@ -57,6 +65,8 @@ class CategoryController extends Controller
             'sort_order' => $request->integer('sort_order', 0),
         ]);
 
+        $this->invalidateCategoryCache();
+
         return ApiResponse::created(
             new AdminCategoryResource($category->load(['parent', 'children', 'products'])),
             'Category created.',
@@ -85,6 +95,8 @@ class CategoryController extends Controller
             'sort_order' => $request->has('sort_order') ? $request->integer('sort_order') : $category->sort_order,
         ]);
 
+        $this->invalidateCategoryCache();
+
         return ApiResponse::success(
             new AdminCategoryResource($category->load(['parent', 'children', 'products'])),
             'Category updated.',
@@ -96,6 +108,8 @@ class CategoryController extends Controller
         $category = $this->findCategory($category);
         $category->is_active = false;
         $category->save();
+
+        $this->invalidateCategoryCache();
 
         return ApiResponse::success(
             new AdminCategoryResource($category->fresh(['parent', 'children', 'products'])),
@@ -109,6 +123,8 @@ class CategoryController extends Controller
         $category->is_active = true;
         $category->save();
 
+        $this->invalidateCategoryCache();
+
         return ApiResponse::success(
             new AdminCategoryResource($category->fresh(['parent', 'children', 'products'])),
             'Category activated.',
@@ -120,6 +136,8 @@ class CategoryController extends Controller
         $category = $this->findCategory($category);
         $category->is_active = false;
         $category->save();
+
+        $this->invalidateCategoryCache();
 
         return ApiResponse::success(
             new AdminCategoryResource($category->fresh(['parent', 'children', 'products'])),

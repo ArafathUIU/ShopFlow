@@ -7,22 +7,27 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\Cache\CacheService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
+    public function __construct(private readonly CacheService $cache) {}
+
     public function index(): JsonResponse
     {
-        $categories = Category::query()
-            ->active()
-            ->whereNull('parent_id')
-            ->withCount('products')
-            ->with(['children' => function ($q): void {
-                $q->active()->orderBy('sort_order')->withCount('products');
-            }])
-            ->orderBy('sort_order')
-            ->get();
+        $categories = $this->cache->remember('categories:tree', CacheService::CATEGORIES_TTL_SECONDS, function () {
+            return Category::query()
+                ->active()
+                ->whereNull('parent_id')
+                ->withCount('products')
+                ->with(['children' => function ($q): void {
+                    $q->active()->orderBy('sort_order')->withCount('products');
+                }])
+                ->orderBy('sort_order')
+                ->get();
+        });
 
         return ApiResponse::success(CategoryResource::collection($categories));
     }

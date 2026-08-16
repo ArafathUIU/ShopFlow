@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\Products\UpdateProductRequest;
 use App\Http\Resources\Admin\AdminProductResource;
 use App\Http\Resources\ProductImageResource;
 use App\Models\Product;
+use App\Services\Cache\CacheService;
 use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -18,9 +19,16 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
+    public function __construct(private readonly CacheService $cache) {}
+
     private function findProduct(int $id): Product
     {
         return Product::withTrashed()->findOrFail($id);
+    }
+
+    private function invalidateProductCache(): void
+    {
+        $this->cache->forget('categories:tree');
     }
 
     public function index(IndexAdminProductsRequest $request): JsonResponse
@@ -77,6 +85,8 @@ class ProductController extends Controller
             ]);
         }
 
+        $this->invalidateProductCache();
+
         return ApiResponse::created(
             new AdminProductResource($product->load(['category', 'images', 'inventory'])),
             'Product created.',
@@ -110,6 +120,8 @@ class ProductController extends Controller
             'is_featured' => $request->has('is_featured') ? $request->boolean('is_featured') : $product->is_featured,
         ]);
 
+        $this->invalidateProductCache();
+
         return ApiResponse::success(
             new AdminProductResource($product->load(['category', 'images', 'inventory'])),
             'Product updated.',
@@ -121,6 +133,8 @@ class ProductController extends Controller
         $product = $this->findProduct($product);
         $product->delete();
 
+        $this->invalidateProductCache();
+
         return ApiResponse::success([], 'Product deleted.');
     }
 
@@ -128,6 +142,8 @@ class ProductController extends Controller
     {
         $product = $this->findProduct($product);
         $product->restore();
+
+        $this->invalidateProductCache();
 
         return ApiResponse::success(
             new AdminProductResource($product->load(['category', 'images', 'inventory'])),
@@ -143,6 +159,8 @@ class ProductController extends Controller
             'archived_at' => now(),
         ]);
 
+        $this->invalidateProductCache();
+
         return ApiResponse::success(new AdminProductResource($product->fresh(['category', 'images', 'inventory'])), 'Product archived.');
     }
 
@@ -153,6 +171,8 @@ class ProductController extends Controller
             'status' => ProductStatus::Active,
             'archived_at' => null,
         ]);
+
+        $this->invalidateProductCache();
 
         return ApiResponse::success(new AdminProductResource($product->fresh(['category', 'images', 'inventory'])), 'Product unarchived.');
     }
@@ -169,6 +189,8 @@ class ProductController extends Controller
             'is_primary' => $request->boolean('is_primary'),
         ]);
 
+        $this->invalidateProductCache();
+
         return ApiResponse::created(new ProductImageResource($image), 'Image attached.');
     }
 
@@ -177,6 +199,8 @@ class ProductController extends Controller
         $product = $this->findProduct($product);
 
         $product->images()->findOrFail($image)->delete();
+
+        $this->invalidateProductCache();
 
         return ApiResponse::success([], 'Image removed.');
     }

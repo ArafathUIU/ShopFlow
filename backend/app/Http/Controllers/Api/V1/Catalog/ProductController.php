@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\IndexProductsRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Services\Cache\CacheService;
 use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
+    public function __construct(private readonly CacheService $cache) {}
+
     public function index(IndexProductsRequest $request): JsonResponse
     {
         $sort = $request->input('sort');
@@ -39,7 +42,11 @@ class ProductController extends Controller
             default => $query->orderByDesc('created_at')->orderByDesc('id'),
         };
 
-        $products = $query->paginate($request->perPage());
+        $cacheKey = 'products:list:'.md5($request->fullUrl());
+
+        $products = $this->cache->remember($cacheKey, CacheService::PRODUCTS_TTL_SECONDS, function () use ($query, $request) {
+            return $query->paginate($request->perPage());
+        });
 
         return ApiResponse::success(
             ProductResource::collection($products),
