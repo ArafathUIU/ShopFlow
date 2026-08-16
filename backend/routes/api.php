@@ -32,6 +32,11 @@ Route::prefix('v1')->group(function (): void {
         'service' => 'shopflow-api',
         'version' => 'v1',
         'timestamp' => now()->toIso8601String(),
+        'checks' => [
+            'database' => \Illuminate\Support\Facades\DB::connection()->getPdo() ? 'ok' : 'error',
+            'cache' => \Illuminate\Support\Facades\Cache::store('redis')->get('health:check') === 'ok' ? 'ok' : 'error',
+            'queue' => \Illuminate\Support\Facades\Queue::connection()->getQueue() ? 'ok' : 'error',
+        ],
     ]));
 
     // Domain routes are registered in dedicated files as they are built:
@@ -47,4 +52,5 @@ Route::prefix('v1')->group(function (): void {
     // require __DIR__.'/api/v1/users.php';
     // require __DIR__.'/api/v1/analytics.php';
     require __DIR__.'/api/v1/admin.php';
+    require __DIR__.'/api/v1/docs.php';
 });
