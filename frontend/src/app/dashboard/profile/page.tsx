@@ -9,13 +9,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, isAuthenticated, loadFromStorage, setUser } = useAuthStore();
   const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -61,47 +60,48 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
-        <p className="text-muted-foreground mt-1">Manage your account settings.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Profile</h1>
+        <p className="text-slate-500 mt-1">Manage your account settings.</p>
       </div>
 
-      <Card>
+      <Card className="border-slate-200 shadow-sm">
         <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
-          <CardDescription>Update your account details here.</CardDescription>
+          <CardTitle className="text-slate-900">Personal Information</CardTitle>
+          <CardDescription className="text-slate-500">Update your account details here.</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="space-y-4">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+              <Skeleton className="h-10 w-full rounded-lg" />
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
                   {error}
                 </div>
               )}
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name" className="text-sm font-medium text-slate-700">Full Name</Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  className="rounded-lg"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" value={user?.email || ''} disabled />
+                <Label htmlFor="email" className="text-sm font-medium text-slate-700">Email</Label>
+                <Input id="email" value={user?.email || ''} disabled className="rounded-lg bg-slate-50" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
-                <Input id="role" value={user?.role || ''} disabled />
+                <Label htmlFor="role" className="text-sm font-medium text-slate-700">Role</Label>
+                <Input id="role" value={user?.role || ''} disabled className="rounded-lg bg-slate-50 capitalize" />
               </div>
-              <Button type="submit" disabled={saving}>
+              <Button type="submit" disabled={saving} className="rounded-xl">
                 {saving ? 'Saving...' : 'Save Changes'}
               </Button>
             </form>
@@ -109,12 +109,12 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-slate-200 shadow-sm">
         <CardHeader>
-          <CardTitle>Account Actions</CardTitle>
+          <CardTitle className="text-slate-900">Account Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button variant="destructive" onClick={handleLogout} className="gap-2">
+          <Button variant="destructive" onClick={handleLogout} className="gap-2 rounded-xl">
             <LogOut className="h-4 w-4" />
             Logout
           </Button>

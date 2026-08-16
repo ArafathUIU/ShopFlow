@@ -37,11 +37,16 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen">
-      <aside className="fixed inset-y-0 left-0 z-10 w-64 border-r bg-background">
-        <div className="flex h-16 items-center justify-center border-b px-6">
-          <Link href="/" className="text-lg font-bold tracking-tight">
-            ShopFlow
+    <div className="flex min-h-screen bg-slate-50">
+      <aside className="fixed inset-y-0 z-10 w-64 border-r border-slate-200 bg-white">
+        <div className="flex h-16 items-center justify-center border-b border-slate-200 px-6">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-sm">
+              S
+            </div>
+            <span className="text-lg font-bold tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
+              ShopFlow
+            </span>
           </Link>
         </div>
         <nav className="flex flex-col gap-1 p-4">
@@ -50,8 +55,8 @@ export default function DashboardLayout({
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
-                'data-[active=true]:bg-accent data-[active=true]:text-accent-foreground'
+                'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                'hover:bg-slate-100 hover:text-slate-900 text-slate-600'
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -61,16 +66,16 @@ export default function DashboardLayout({
           {(user?.role === 'admin' || user?.role === 'manager') && (
             <Link
               href="/admin"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 text-slate-600"
             >
               <Shield className="h-4 w-4" />
               Admin
             </Link>
           )}
-          <div className="mt-auto pt-4 border-t">
+          <div className="mt-auto pt-4 border-t border-slate-200">
             <Button
               variant="ghost"
-              className="w-full justify-start gap-3"
+              className="w-full justify-start gap-3 rounded-xl hover:bg-slate-100"
               onClick={async () => {
                 await useAuthStore.getState().logout();
                 router.push('/auth/login');
@@ -83,7 +88,7 @@ export default function DashboardLayout({
         </nav>
       </aside>
       <main className="flex-1 ml-64">
-        <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <div className="container mx-auto px-4 sm:px-6 py-8 max-w-5xl">
           {children}
         </div>
       </main>
