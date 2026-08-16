@@ -14,11 +14,14 @@ export function ProductGrid({ products, loading }: ProductGridProps) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="flex flex-col gap-3">
-            <Skeleton className="aspect-square w-full rounded-lg" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
-            <Skeleton className="h-10 w-full" />
+          <div key={i} className="flex flex-col gap-4">
+            <Skeleton className="aspect-[4/3] w-full rounded-2xl" />
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-16 rounded-lg" />
+              <Skeleton className="h-5 w-3/4 rounded-lg" />
+              <Skeleton className="h-6 w-1/3 rounded-lg" />
+              <Skeleton className="h-10 w-full rounded-xl" />
+            </div>
           </div>
         ))}
       </div>
@@ -27,8 +30,8 @@ export function ProductGrid({ products, loading }: ProductGridProps) {
 
   if ((products ?? []).length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground text-lg">No products found.</p>
+      <div className="text-center py-16">
+        <p className="text-slate-500 text-lg">No products found.</p>
       </div>
     );
   }

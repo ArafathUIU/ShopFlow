@@ -8,8 +8,7 @@ import { ProductGrid } from '@/components/product/product-grid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Search, SlidersHorizontal, X } from 'lucide-react';
+import { Search, SlidersHorizontal, X, Check } from 'lucide-react';
 
 const sortOptions = [
   { value: 'featured', label: 'Featured' },
@@ -33,7 +32,7 @@ function SimpleSelect({ value, onValueChange, options, placeholder }: {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-10 w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium shadow-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
       >
         <span className="truncate">{displayValue}</span>
         <SlidersHorizontal className="h-4 w-4 opacity-50" />
@@ -41,18 +40,19 @@ function SimpleSelect({ value, onValueChange, options, placeholder }: {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+          <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-200 bg-white p-1 text-slate-900 shadow-lg">
             {options.map((opt) => (
               <div
                 key={opt.value}
                 role="option"
                 aria-selected={value === opt.value}
-                className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+                className="relative flex w-full cursor-pointer select-none items-center rounded-lg px-3 py-2 text-sm outline-none hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
                 onClick={() => {
                   onValueChange(opt.value);
                   setOpen(false);
                 }}
               >
+                {value === opt.value && <Check className="h-4 w-4 mr-2 text-indigo-600" />}
                 {opt.label}
               </div>
             ))}
@@ -143,13 +143,14 @@ function ProductsClient() {
   }));
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 sm:px-6 py-8 md:py-12">
       <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="w-full lg:w-64 shrink-0">
+        <aside className="w-full lg:w-72 shrink-0">
           <div className="flex items-center justify-between lg:hidden mb-4">
-            <h2 className="text-lg font-semibold">Filters</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Filters</h2>
             {hasFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                <X className="h-4 w-4 mr-1.5" />
                 Clear All
               </Button>
             )}
@@ -157,9 +158,9 @@ function ProductsClient() {
 
           <div className="space-y-6">
             <div>
-              <Label className="text-sm font-medium mb-2 block">Search</Label>
+              <Label className="text-sm font-semibold text-slate-700 mb-2.5 block">Search</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
                   placeholder="Search products..."
                   value={search}
@@ -167,13 +168,13 @@ function ProductsClient() {
                     setSearch(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="pl-9"
+                  className="pl-9 rounded-lg"
                 />
               </div>
             </div>
 
             <div>
-              <Label className="text-sm font-medium mb-2 block">Category</Label>
+              <Label className="text-sm font-semibold text-slate-700 mb-2.5 block">Category</Label>
               <SimpleSelect
                 value={category}
                 onValueChange={(val) => { setCategory(val); setCurrentPage(1); }}
@@ -183,28 +184,28 @@ function ProductsClient() {
             </div>
 
             <div>
-              <Label className="text-sm font-medium mb-2 block">Price Range</Label>
+              <Label className="text-sm font-semibold text-slate-700 mb-2.5 block">Price Range</Label>
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
                   placeholder="Min"
                   value={minPrice}
                   onChange={(e) => { setMinPrice(e.target.value); setCurrentPage(1); }}
-                  className="h-9"
+                  className="h-10 rounded-lg"
                 />
-                <span className="text-muted-foreground">-</span>
+                <span className="text-slate-400 font-medium">-</span>
                 <Input
                   type="number"
                   placeholder="Max"
                   value={maxPrice}
                   onChange={(e) => { setMaxPrice(e.target.value); setCurrentPage(1); }}
-                  className="h-9"
+                  className="h-10 rounded-lg"
                 />
               </div>
             </div>
 
             <div>
-              <Label className="text-sm font-medium mb-2 block">Sort By</Label>
+              <Label className="text-sm font-semibold text-slate-700 mb-2.5 block">Sort By</Label>
               <SimpleSelect
                 value={sort}
                 onValueChange={(val) => { setSort(val); setCurrentPage(1); }}
@@ -214,34 +215,45 @@ function ProductsClient() {
             </div>
 
             {hasFilters && (
-              <Button variant="outline" size="sm" onClick={clearFilters} className="w-full">
-                <X className="h-4 w-4 mr-2" />
-                Clear Filters
-              </Button>
+              <div className="lg:hidden">
+                <Button variant="outline" size="sm" onClick={clearFilters} className="w-full rounded-lg border-slate-200">
+                  <X className="h-4 w-4 mr-2" />
+                  Clear Filters
+                </Button>
+              </div>
             )}
           </div>
         </aside>
 
         <div className="flex-1">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold">Products</h1>
-            <span className="text-sm text-muted-foreground">
-              {loading ? 'Loading...' : `${(products ?? []).length} products`}
-            </span>
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Products</h1>
+              <p className="text-sm text-slate-500 mt-1">
+                {loading ? 'Loading...' : `${(products ?? []).length} products`}
+              </p>
+            </div>
+            {hasFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="hidden lg:flex text-red-600 hover:text-red-700 hover:bg-red-50">
+                <X className="h-4 w-4 mr-1.5" />
+                Clear filters
+              </Button>
+            )}
           </div>
           <ProductGrid products={products} loading={loading} />
 
           {!loading && totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-8">
+            <div className="flex items-center justify-center gap-3 mt-10">
               <Button
                 variant="outline"
                 size="sm"
                 disabled={currentPage <= 1}
                 onClick={() => setCurrentPage((p) => p - 1)}
+                className="rounded-lg border-slate-200 hover:bg-slate-50"
               >
                 Previous
               </Button>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm font-medium text-slate-600 min-w-[80px] text-center">
                 Page {currentPage} of {totalPages}
               </span>
               <Button
@@ -249,6 +261,7 @@ function ProductsClient() {
                 size="sm"
                 disabled={currentPage >= totalPages}
                 onClick={() => setCurrentPage((p) => p + 1)}
+                className="rounded-lg border-slate-200 hover:bg-slate-50"
               >
                 Next
               </Button>
@@ -262,7 +275,7 @@ function ProductsClient() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div className="container mx-auto px-4 py-8"><ProductGrid products={[]} loading /></div>}>
+    <Suspense fallback={<div className="container mx-auto px-4 sm:px-6 py-8"><ProductGrid products={[]} loading /></div>}>
       <ProductsClient />
     </Suspense>
   );
