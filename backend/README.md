@@ -36,6 +36,7 @@ php artisan db:seed            # seed roles, admin user, demo catalog
 php artisan test               # Pest test suite
 php artisan pint               # code style fixer
 php artisan queue:work         # process background jobs
+php artisan app:cleanup-expired-carts --days=30  # remove abandoned carts
 ```
 
 ## API
@@ -71,10 +72,32 @@ Sanctum bearer tokens (`Authorization: Bearer <token>`):
 | POST | `/api/v1/auth/reset-password` | Reset password (`token`, `email`, `password`) |
 
 `register`, `login`, `forgot-password`, and the verification endpoint are rate
-limited via `throttle` middleware.
+limited via `throttle` middleware. Authenticated API routes are rate limited to
+60 requests/minute; unauthenticated auth routes are limited to 20 requests/minute.
 
 Authorization: routes restricted with the `role` middleware, e.g.
 `middleware('role:admin')` or `middleware('role:admin,manager')`.
+
+### Caching
+
+Product listings and category trees are cached using Redis with a cache-aside
+pattern (`App\Services\Cache\CacheService`). Products are cached for 1 hour;
+categories are cached for 2 hours. Cache is invalidated on product/category
+mutations.
+
+### Background Jobs
+
+- `SendOrderConfirmationNotification` — dispatches order confirmation emails
+  after an order is placed.
+- `ProcessAnalyticsEvent` — processes analytics events asynchronously.
+- `CleanupExpiredCarts` — artisan command to remove abandoned carts older than
+  a configurable number of days.
+
+### Notifications
+
+Order events send email notifications via Laravel notifications:
+- `OrderConfirmationNotification` — sent when an order is placed.
+- `OrderStatusUpdateNotification` — sent when an order status changes.
 
 ## Demo Credentials
 

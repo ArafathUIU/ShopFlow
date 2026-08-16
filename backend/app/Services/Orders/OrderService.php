@@ -7,6 +7,8 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Exceptions\InsufficientStockException;
 use App\Exceptions\InvalidCheckoutException;
+use App\Jobs\ProcessAnalyticsEvent;
+use App\Jobs\SendOrderConfirmationNotification;
 use App\Models\Cart;
 use App\Models\Inventory;
 use App\Models\Order;
@@ -23,12 +25,6 @@ final class OrderService
         private readonly PricingService $pricing,
     ) {}
 
-    /**
-     * Create an order from the user's cart, reserving stock under row locks.
-     *
-     * @param  array<string, mixed>  $shippingAddress
-     * @param  array<string, mixed>  $billingAddress
-     */
     public function placeOrderFromCart(User $user, array $shippingAddress, array $billingAddress, ?string $note = null): Order
     {
         $cart = $this->cartService->getOrCreateFor($user)->load(['items.product.inventory', 'coupon']);
@@ -131,8 +127,17 @@ final class OrderService
 
             $this->cartService->clear($cart);
 
+            SendOrderConfirmationNotification::dispatch($order->load('user'));
+            ProcessAnalyticsEvent::dispatch('order.placed', [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'total' => $order->total,
+                'user_id' => $user->id,
+                'items_count' => $order->items()->count(),
+            ]);
+
             return $order;
-        });
+        }        );
     }
 
     /**

@@ -4,14 +4,15 @@ Production-style e-commerce & inventory management platform.
 
 ShopFlow demonstrates modern software engineering practices beyond basic CRUD: a
 customer storefront, a role-based admin platform, transactional inventory
-management, payment webhooks, async background jobs, Redis caching, analytics,
-CI/CD, and an AI shopping assistant — all on a modular, scalable monorepo.
+management, payment webhooks, Redis caching, background jobs, rate limiting,
+notifications, CI/CD, and a planned AI shopping assistant — all on a modular,
+scalable monorepo.
 
 ## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | Next.js, TypeScript, React, Tailwind CSS, shadcn/ui |
+| Frontend | Next.js 16, TypeScript, React, Tailwind CSS v4, shadcn/ui |
 | Backend | Laravel 13, PHP 8.3+, REST APIs, Sanctum, Policies, Queues |
 | Database | PostgreSQL 16 |
 | Cache / Queue | Redis 7 |
@@ -67,16 +68,16 @@ docker compose up
 
 ## Development Phases
 
-| Phase | Scope |
-| --- | --- |
-| 1 | Foundation — repo, docs, scaffolding, Docker Compose |
-| 2 | Backend core — schema, models, auth, RBAC, error handling |
-| 3 | Commerce engine — catalog, cart, inventory, orders, payments |
-| 4 | Frontend — storefront, auth, cart, checkout |
-| 5 | Administration — dashboard, product/inventory/order management, analytics |
-| 6 | Production engineering — caching, queues, webhooks, rate limiting, API docs, tests |
-| 7 | DevOps — CI/CD, deployment, monitoring |
-| 8 | AI — AI shopping assistant over existing APIs |
+| Phase | Scope | Status |
+| --- | --- | --- |
+| 1 | Foundation — repo, docs, scaffolding, Docker Compose | Complete |
+| 2 | Backend core — schema, models, auth, RBAC, error handling | Complete |
+| 3 | Commerce engine — catalog, cart, inventory, orders, payments | Complete |
+| 4 | Frontend — storefront, auth, cart, checkout | Complete |
+| 5 | Administration — dashboard, product/inventory/order management, analytics | Complete |
+| 6 | Production engineering — caching, queues, webhooks, rate limiting, API docs, tests | In Progress |
+| 7 | DevOps — Docker optimization, deployment, monitoring, production config | Pending |
+| 8 | AI — AI shopping assistant over existing APIs | Deferred |
 
 ## Documentation
 
